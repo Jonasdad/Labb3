@@ -28,9 +28,10 @@ check(T, L, S, [], ax(F)) :- member([S, List], T), check(T, L, List, [], F).
 % EX
 check(T, L, S, [], ex(F)) :- member([S, List], T), member(X, List), check(T, L, X, [], F).
 % AG
-
+check(T, L, S, [], ag(F)) :- check(T, L, S, [], F), check(T, L, S, [], ax(ag(F))).
 % EG
-
+check(T, L, S, [], eg(F)) :- check(T, L, S, [], F), check(T, L, S, [], ex(eg(F))).
 % EF
-
+check(T, L, S, [], ef(F)) :- check(T, L, S, [], F); check(T, L, S, [], ex(ef(F))).
 % AF
+check(T, L, S, [], af(F)) :- check(T, L, S, [], F); check(T, L, S, [], ax(af(F))).
