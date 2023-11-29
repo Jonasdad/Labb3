@@ -2,8 +2,8 @@
 :- use_module(library(lists)).
 % Load model, initial state and formula from file.
 verify(Input) :-
-see(Input), read(T), read(L), read(S), read(F), seen,
-check(T, L, S, [], F).
+    see(Input), read(T), read(L), read(S), read(F), seen,
+    check(T, L, S, [], F).
 % check(T, L, S, U, F)
 % T - The transitions in form of adjacency lists
 % L - The labeling
@@ -36,11 +36,11 @@ check(T, L, S, U, ag(F)) :- member([S, LList], L),
                         \+member(S, U), 
                         append([S], U, U2), 
                         [Head|Next] = List,!, 
-                        checkag(T, L, List, U, ag(F)),
-                        check(T, L, S, U2, F),!.
+                        checkag(T, L, List, U2, ag(F)),
+                        check(T, L, S, U2, F).
 
 checkag(T, L, [], U, ag(F)).
-checkag(T, L, [S|Rest], U, ag(F)):- \+member(S,U),
+checkag(T, L, [S|Rest], U, ag(F)):- (\+member(S,U); check(T, L, Rest, U, ag(F))), 
                                     append([S], U, U2),
                                     member([S, List], L),
                                     member(F, List),
