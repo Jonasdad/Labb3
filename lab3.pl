@@ -1,5 +1,5 @@
 % For SICStus, uncomment line below: (needed for member/2)
-%:- use_module(library(lists)).
+:- use_module(library(lists)).
 % Load model, initial state and formula from file.
 verify(Input) :-
 see(Input), read(T), read(L), read(S), read(F), seen,
@@ -17,7 +17,7 @@ check(T, L, S, [], F).
 % U
 % To execute: consult('your_file.pl'). verify('input.txt').
 % Literals
-%check(_, L, S, [], X) :- ...
+check(_, L, S, [], X) :- member([S, List], L), member(X, List).
 %check(_, L, S, [], neg(X)) :- ...
 % And
 %check(T, L, S, [], and(F,G)) :- ...
