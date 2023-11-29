@@ -17,21 +17,20 @@ check(T, L, S, [], F).
 % U
 % To execute: consult('your_file.pl'). verify('input.txt').
 % Literals
-check(_, L, S, [], X) :- member([S, List], L), member(X, List).
-check(_, L, S, [], neg(X)) :- member([S, List], L), \+member(X, List).
+check(_, L, S, U, X) :- member([S, List], L), member(X, List).
+check(_, L, S, U, neg(X)) :- member([S, List], L), \+member(X, List).
 % And
-check(T, L, S, [], and(F,G)) :- check(T, L, S, [], F), check(T, L, S, [], G).
+check(T, L, S, U, and(F,G)) :- check(T, L, S, U, F), check(T, L, S, U, G).
 % Or
-check(T, L, S, [], or(F,G)) :- check(T, L, S, [], F); check(T, L, S, [], G).
+check(T, L, S, U, or(F,G)) :- check(T, L, S, U, F); check(T, L, S, U, G).
 % AX
-check(T, L, S, [], ax(F)) :- member([S, List], T), check(T, L, List, [], F).
+check(T, L, S, U, ax(F)) :- member([S, List], T), check(T, L, List, U, F).
 % EX
-check(T, L, S, [], ex(F)) :- member([S, List], T), member(X, List), check(T, L, X, [], F).
+check(T, L, S, U, ex(F)) :- member([S, List], T), member(X, List), check(T, L, X, U, F).
 % AG
-check(T, L, S, [], ag(F)) :- check(T, L, S, [], F), check(T, L, S, [], ax(ag(F))).
+check(T, L, S, U, ag(F)) :- append([S], U, U2), \+member(S, U2), check(T, L, S, U2, ag(F)).
 % EG
-check(T, L, S, [], eg(F)) :- check(T, L, S, [], F), check(T, L, S, [], ex(eg(F))).
+
 % EF
-check(T, L, S, [], ef(F)) :- check(T, L, S, [], F); check(T, L, S, [], ex(ef(F))).
+
 % AF
-check(T, L, S, [], af(F)) :- check(T, L, S, [], F); check(T, L, S, [], ax(af(F))).

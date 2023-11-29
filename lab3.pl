@@ -17,18 +17,23 @@ check(T, L, S, [], F).
 % U
 % To execute: consult('your_file.pl'). verify('input.txt').
 % Literals
-check(_, L, S, [], X) :- member([S, List], L), member(X, List).
-check(_, L, S, [], neg(X)) :- member([S, List], L), \+member(X, List).
+check(_, L, S, U, X) :- member([S, List], L), write('List: '),write(List), member(X, List).
+check(_, L, S, U, neg(X)) :- member([S, List], L),write('List: '),write(List) \+member(X, List).
 % And
-check(T, L, S, [], and(F,G)) :- check(T, L, S, [], F), check(T, L, S, [], G).
+check(T, L, S, U, and(F,G)) :- check(T, L, S, U, F), check(T, L, S, U, G).
 % Or
-check(T, L, S, [], or(F,G)) :- check(T, L, S, [], F); check(T, L, S, [], G).
+check(T, L, S, U, or(F,G)) :- check(T, L, S, U, F); check(T, L, S, U, G).
 % AX
-check(T, L, S, [], ax(F)) :- member([S, List], T), check(T, L, List, [], F).
+check(T, L, S, U, ax(F)) :- member([S, List], T), check(T, L, List, U, F).
 % EX
-check(T, L, S, [], ex(F)) :- member([S, List], T), member(X, List), check(T, L, X, [], F).
+check(T, L, S, U, ex(F)) :- member([S, List], T), member(X, List), check(T, L, X, U, F).
 % AG
-
+check(T, L, S, U, ag(F)) :- [Head|_] = T,
+                            getNextState(H, A),
+                            append([S], U, U2),
+                            \+member(S, U2),
+                            write('S not in U'),
+                            check(NextState, L, Q, U2, ag(F)).
 % EG
 
 % EF
