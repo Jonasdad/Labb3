@@ -24,11 +24,28 @@ check(T, L, S, U, and(F,G)) :- check(T, L, S, U, F), check(T, L, S, U, G).
 % Or
 check(T, L, S, U, or(F,G)) :- check(T, L, S, U, F); check(T, L, S, U, G).
 % AX
-check(T, L, S, U, ax(F)) :- member([S, List], T), check(T, L, List, U, F).
+check(T, L, S, U, ax(F)) :- member([S, List], T), 
+                        check(T, L, List, U, F).
 % EX
-check(T, L, S, U, ex(F)) :- member([S, List], T), member(X, List), check(T, L, X, U, F).
+check(T, L, S, U, ex(F)) :- member([S, List], T), 
+                        member(X, List),   
+                        check(T, L, X, U, F).
 % AG
-check(T, L, S, U, ag(F)) :- append([S], U, U2), \+member(S, U2), check(T, L, S, U2, ag(F)).
+check(T, L, S, U, ag(F)) :- member([S, LList], L), 
+                        member([S, List], T), 
+                        \+member(S, U), 
+                        append([S], U, U2), 
+                        [Head|Next] = List,!, 
+                        checkag(T, L, List, U, ag(F)),
+                        check(T, L, S, U2, F),!.
+
+checkag(T, L, [], U, ag(F)).
+checkag(T, L, [S|Rest], U, ag(F)):- \+member(S,U),
+                                    append([S], U, U2),
+                                    member([S, List], L),
+                                    member(F, List),
+                                    checkag(T, L, Rest, U2, ag(F)).
+                                        
 % EG
 
 % EF
