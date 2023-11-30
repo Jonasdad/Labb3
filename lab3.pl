@@ -30,24 +30,19 @@ check(T, L, S, U, ax(F)) :- member([S, List], T),
 check(T, L, S, U, ex(F)) :- member([S, List], T), 
                         member(X, List),   
                         check(T, L, X, U, F).
-% AG
-check(T, L, S, U, ag(F)) :- member([S, LList], L), 
-                        member([S, List], T), 
-                        \+member(S, U), 
-                        append([S], U, U2), 
+% AG - For every single path from S in the Graph, F is ALWAYS true. Action: Implement DFS.
+check(T, L, S, U, ag(F)):- member(S,U).
+check(T, L, S, U, ag(F)) :- \+member(S, U), 
+                        append([S], U, U2),
                         [Head|Next] = List,!, 
                         checkag(T, L, List, U2, ag(F)),
                         check(T, L, S, U2, F).
+checkag(_,_,[],_,_).
+checkag(T,L,[S|R],U,F):-check(T,L,S,U,F),checkag(T,L,R,U,F).
 
-checkag(T, L, [], U, ag(F)).
-checkag(T, L, [S|Rest], U, ag(F)):- (\+member(S,U); (check(T, L, Rest, U, ag(F)))), 
-                                    append([S], U, U2),
-                                    member([S, List], L),
-                                    member(F, List),
-                                    checkag(T, L, Rest, U2, ag(F)).
-                                        
-% EG
 
-% EF
+% EG - For some path from S, F becomes true and stays true from that point on.
 
-% AF
+% EF - For some future path P from S, F becomes true. 
+
+% AF - For all future paths from S, F becomes true.
