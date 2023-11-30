@@ -30,24 +30,28 @@ check(T, L, S, U, ax(F)) :- member([S, List], T),
 check(T, L, S, U, ex(F)) :- member([S, List], T), 
                         member(X, List),   
                         check(T, L, X, U, F).
-% AG
-check(T, L, S, U, ag(F)) :- member([S, LList], L), 
-                        member([S, List], T), 
-                        \+member(S, U), 
-                        append([S], U, U2), 
-                        [Head|Next] = List,!, 
-                        checkag(T, L, List, U2, ag(F)),
-                        check(T, L, S, U2, F).
+% AG - For every single path from S in the Graph, F is ALWAYS true. Action: Implement DFS.
 
-checkag(T, L, [], U, ag(F)).
-checkag(T, L, [S|Rest], U, ag(F)):- (\+member(S,U); check(T, L, Rest, U, ag(F))), 
-                                    append([S], U, U2),
-                                    member([S, List], L),
-                                    member(F, List),
-                                    checkag(T, L, Rest, U2, ag(F)).
-                                        
-% EG
 
-% EF
+% 1. Check literal on current state, if true -> Proceed
+% 2. Add current state to visited list
+% 3. Step to neighbor
+% 4. repeat 1-3
+check(_, _, S, U, ag(_)) :- member(S, U),!.
+check(T, L, S, U, ag(F)) :-
+    check(T, L, S, U, F),
+    append([S], U, U2),
+    member([S, Neighbors], T),!,
+    check_neighbors(T, L, Neighbors, U2, ag(F)).
 
-% AF
+check_neighbors(_, _, [], _, _):-!.
+check_neighbors(T, L, [H | R], U, F) :-
+    check(T, L, H, U, F),
+    check_neighbors(T, L, R, U, F).
+
+
+% EG - For some path from S, F becomes true and stays true from that point on.
+
+% EF - For some future path P from S, F becomes true. 
+
+% AF - For all future paths from S, F becomes true.
