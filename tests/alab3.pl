@@ -36,36 +36,28 @@ check(T, L, S, [], ex(F)) :- member([S, List], T),
                         member(New, List), check(T,L,New,[],F).
 % AG - For every single path from S in the Graph, F is ALWAYS true. Action: Implement DFS.
 
-
-% 1. Check literal on current state, if true -> Proceed
-% 2. Add current state to visited list
-% 3. Step to neighbor
-% 4. repeat 1-3
 check(_, _, S, U, ag(_)) :- member(S, U). % Cycle detection
 check(T, L, S, U, ag(F)) :- \+member(S,U),
     check(T, L, S, [], F),
     member([S,List], T),
     ok(T,L,List,[S|U],ag(F)).
 
-
 % EG - For some path from S, F becomes true and stays true from that point on.
-% 1. 
 check(_, _, S, U, eg(_)):- member(S, U).
 check(T,L,S,U,eg(F)):- \+member(S,U),
                         check(T,L,S,[],F),
-                        member([S,List],T),
-                        member(New,List),
+                        member([S,P],T),
+                        member(New,P),
                         check(T,L,New,[S|U],eg(F)).
-
 
 % EF - For some future path P from S, F becomes true. 
 check(T,L,S,U,ef(F)):- \+member(S,U), check(T,L,S,[],F).
-check(T,L,S,U,ef(F)):- \+member(S,U), member([S,List],T),
-                        member(S2,List),
+check(T,L,S,U,ef(F)):- \+member(S,U), member([S,P],T),
+                        member(S2,P),
                         check(T,L,S2,[S|U],ef(F)).
 % AF - For all future paths from S, F becomes true.
 check(T,L,S,U,af(F)):- \+member(S,U),
                         check(T,L,S,[],F).
 check(T,L,S,U,af(F)):- \+member(S,U),
                         member([S,List],T),
-                        ok(T,L,List,[S,U], af(F)).
+                        ok(T,L,List,[S|U], af(F)).
